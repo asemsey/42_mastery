@@ -25,7 +25,7 @@ obj/%.o: src/%.c
 
 $(NAME): $(OBJS)
 	@$(CC) $(OBJS) $(HEADERS) $(LIBFT) -o $(NAME)
-	@printf "Compiled successfully\nRun with:   ./ft_ls [flags]\n"
+	@printf "Compiled successfully\nRun with:   ./ft_ls [option] [file/directory]\n"
 
 $(LIBFT):
 	@if [ ! -d "$(LIBFT_PATH)" ]; then \
