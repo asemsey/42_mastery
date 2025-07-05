@@ -15,7 +15,7 @@ t_filedata	*init_filedata() {
 	init->bytes = -1;//unset
 	init->created = (time_t)0;
 	init->modified = (time_t)0;
-	init->f_type = FILE;
+	init->f_type = F_FILE;
 	init->files = NULL;
 	init->name = NULL;
 	init->num_files = -1;//not a dir

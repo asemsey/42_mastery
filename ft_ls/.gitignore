@@ -1,2 +1,4 @@
-libft
 obj
+ft_ls
+libft/libft.a
+libft/obj

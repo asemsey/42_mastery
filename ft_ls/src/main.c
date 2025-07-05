@@ -10,6 +10,6 @@ int	main(int argc, char **argv, char **env) {
 	pwd.name = ft_getenv("PWD", env);
 	if (!pwd.name)
 		return 1;
-	ft_putendl_fd(pwd.name, 1);
+	ft_printf("Path: %s\n", pwd.name);
 	return 0;
 }
