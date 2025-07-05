@@ -13,10 +13,6 @@ LIBFT_PATH	= ./libft
 LIBFT		= $(LIBFT_PATH)/libft.a
 HEADERS		= -I ./include -I $(LIBFT_PATH)/libft.h
 
-# MLX_FLAGS	= 
-# LIB_PATH	= ./lib
-# LIB			= $(LIB_PATH)/full_libft.a
-
 all: $(LIBFT) $(NAME)
 
 obj/%.o: src/%.c
@@ -31,10 +27,7 @@ $(LIBFT):
 	@if [ ! -d "$(LIBFT_PATH)" ]; then \
 		git clone $(LIBFT_URL) $(LIBFT_PATH); \
 	fi
-	@make -sC $(LIBFT_PATH)
-
-# $(LIB):
-# 	@make -sC $(LIB_PATH)
+	@make -sC $(LIBFT_PATH) bonus
 
 clean:
 	@rm -rf $(OBJS)
@@ -43,8 +36,8 @@ clean:
 fclean: clean
 	@rm -rf $(NAME)
 	@rm -rf $(LIBFT)
-	make -C $(LIBFT_PATH) fclean
+	@make -C $(LIBFT_PATH) fclean
 
-re: clean all
+re: fclean all
 
 .PHONY: all, clean, fclean, re
