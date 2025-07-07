@@ -1,4 +1,10 @@
 # ft_ls
+
+**TO-DO**
+- function for formatting column sizes (bytes, links, usernames)
+	-> keep a var of longest element in column and extend strings to that length
+- missing stat info: links
+
 ## about ls
 ### options
 option | description
@@ -80,16 +86,18 @@ struct stat {
 ### file data struct (recursive)
 
 ```C
-typedef struct s_filedata {
-	char *name;
-	int f_type;// dir|symlink|file|socket
-	double bytes;
-	int permissions;// format of chmod - three bits?
-	t_time created;
-	t_time modified;
-	struct s_filedata **files;// if f_type is dir this contains files
-	int num_files;//len of `files`
-}	t_filedata;
+struct s_filedata {
+	char				*name;
+	char				*path;// unnecessary?
+	char				f_type;// dir|symlink|file|socket
+	char				permissions[10];
+	off_t				bytes;
+	blkcnt_t			blocks;
+	time_t				modified;
+	nlink_t				links;
+	struct s_filedata	**files;// if f_type is dir this contains files -- should this be linkedlist?
+	int					num_files;// len of `files`
+};
 ```
 
 ## man ls - long format

@@ -22,7 +22,7 @@ int	main(int argc, char **argv, char **env) {
 	}
 	data.files = set_paths(data.path_args, data.pwd);
 
-	set_file_info(&(data.files), data.cmd_flags);
+	set_file_info(data.files, data.cmd_flags);
 	// open given directory
 	// DIR *directory = opendir(data.pwd);
 	// if (!directory) {
@@ -60,12 +60,11 @@ void free_ls_data(t_ls *data) {
 
 int do_ls(t_ls *data) {
 	// test_arg_init(data);
-	
+	test_modtime(data);
 	// go through data.files, check if exists and set info according to flags
 		// set error strings in struct
 	// display errors, run ls on rest
 		// illegal option shows nothing but error and usage !
 		// all other errors listed then correct input exec
-	
 	return 0;
 }

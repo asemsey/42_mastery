@@ -1,7 +1,10 @@
 #include "../include/ft_ls.h"
 
 void		set_file_info(t_filedata **files, int flags);
+void		set_permissions(mode_t st_mode, char *p);
 char		get_filemode(mode_t st_mode);
+void		print_modified(time_t seconds, time_t now);
+
 
 // ----------------------------------------------------------------------
 
@@ -9,14 +12,10 @@ char		get_filemode(mode_t st_mode);
 void		set_file_info(t_filedata **files, int flags) {
 	int i;
 	struct stat filestat;
-	int total;
-	off_t
 	i = 0;
-	total = 0;
 	while (files && files[i]) {
-		// check if file exists
-		if (lstat(files[i]->path, &filestat) < 0) {
-			// error
+		if (lstat(files[i]->name, &filestat) < 0) {
+			ft_printf("ft_ls: %s: No such file or directory\n", files[i++]->name);
 			continue;
 		}
 		files[i]->f_type = get_filemode(filestat.st_mode);
@@ -54,7 +53,7 @@ void set_permissions(mode_t st_mode, char *p) {
 		p[6] = 'r';
 	if (st_mode & S_IWOTH)
 		p[7] = 'w';
-	if (st_mode & S_IXOTH)
+	if (st_mode & S_IXOTH)// HERE: this last one seems more complex...
 		p[8] = 'x';
 	p[9] = '\0';
 }
@@ -76,6 +75,31 @@ char get_filemode(mode_t st_mode) {
 	if (newmode == S_IFREG)
 		return '-';
 	return 0;
+}
+
+void print_modified(time_t seconds, time_t now) {
+	char *str = ctime(&seconds);
+	char *year = str + 20;
+	char *date = str + 4;
+	time_t diff;
+
+	if (ft_strlen(str) < 25)// format different?
+		return;
+	*(year + 4) = '\0';
+
+	diff = now - seconds;// if past > 0, future < 0
+	if (diff < 0)
+		diff = -diff;
+	if (diff > 15552000) {//six months
+		*(date + 6) = '\0';
+		ft_printf("%s %s", date, year);
+	} else {
+		*(date + 12) = '\0';
+		ft_printf("%s", date);
+	}
+	// Www Mmm dd hh:mm:ss yyyy\n
+	// Mmm dd hh:mm -> Jul  7 10:55
+	// Mmm dd yyyy  -> Jul  7 2025
 }
 
 // mode_t st_mode bits:

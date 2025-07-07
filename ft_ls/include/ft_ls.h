@@ -43,7 +43,7 @@ enum e_flag {
 
 struct s_filedata {
 	char				*name;
-	char				*path;
+	char				*path;// unnecessary?
 	char				f_type;// dir|symlink|file|socket
 	char				permissions[10];
 	off_t				bytes;
@@ -65,8 +65,14 @@ t_filedata	**set_paths(t_list *paths, char *pwd);
 int			set_flags(t_list *flags);
 void		separate_args(int argc, char **argv, t_list **paths, t_list **flags);
 char		*arg_to_path(char *pwd, char *arg);
+// 		file_info.c
+void		set_file_info(t_filedata **files, int flags);
+void		set_permissions(mode_t st_mode, char *p);
+char		get_filemode(mode_t st_mode);
+void		print_modified(time_t seconds, time_t now);
 
 // 		test_helpers.c
 void		test_arg_init(t_ls *data);
+void		test_modtime(t_ls *data);
 
 #endif
