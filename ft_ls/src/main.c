@@ -16,8 +16,13 @@ int	main(int argc, char **argv, char **env) {
 	// separate args to files and flags
 	separate_args(argc, argv, &(data.path_args), &(data.flag_args));
 	data.cmd_flags = set_flags(data.flag_args);
+	if (data.cmd_flags == INVALID) {
+		free_ls_data(&data);
+		return 1;
+	}
 	data.files = set_paths(data.path_args, data.pwd);
 
+	set_file_info(&(data.files), data.cmd_flags);
 	// open given directory
 	// DIR *directory = opendir(data.pwd);
 	// if (!directory) {
@@ -55,6 +60,12 @@ void free_ls_data(t_ls *data) {
 
 int do_ls(t_ls *data) {
 	// test_arg_init(data);
-	// HERE
+	
+	// go through data.files, check if exists and set info according to flags
+		// set error strings in struct
+	// display errors, run ls on rest
+		// illegal option shows nothing but error and usage !
+		// all other errors listed then correct input exec
+	
 	return 0;
 }

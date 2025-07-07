@@ -34,23 +34,24 @@ enum e_flag {
 	INVALID = 1 << 5
 };
 
-enum e_ftype {
-	F_DIR,
-	F_LINK,
-	F_FILE,
-	F_SOCK
-};
+// enum e_ftype {
+// 	F_DIR,
+// 	F_LINK,
+// 	F_FILE,
+// 	F_SOCK
+// };
 
 struct s_filedata {
-	char *name;
-	char *path;
-	enum e_ftype f_type;// dir|symlink|file|socket
-	double bytes;
-	int permissions;// format of chmod - three bits?
-	time_t created;
-	time_t modified;
-	struct s_filedata **files;// if f_type is dir this contains files -- should this be linkedlist?
-	int num_files;// len of `files`
+	char				*name;
+	char				*path;
+	char				f_type;// dir|symlink|file|socket
+	char				permissions[10];
+	off_t				bytes;
+	blkcnt_t			blocks;
+	time_t				modified;
+	nlink_t				links;
+	struct s_filedata	**files;// if f_type is dir this contains files -- should this be linkedlist?
+	int					num_files;// len of `files`
 };
 
 // functions --------------------------------

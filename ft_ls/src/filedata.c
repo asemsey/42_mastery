@@ -26,14 +26,15 @@ t_filedata	*init_filedata() {
 	if (!init)
 		return NULL;
 	init->bytes = -1;//unset
-	init->created = (time_t)0;
+	init->blocks = -1;//unset
+	// init->created = (time_t)0;
 	init->modified = (time_t)0;
-	init->f_type = F_FILE;
+	init->f_type = '-';
 	init->files = NULL;
 	init->name = NULL;
 	init->path = NULL;
+	ft_strlcpy(init->permissions, "---------", 10);
 	init->num_files = -1;//not a dir
-	init->permissions = -1;//unset
 	return init;
 }
 

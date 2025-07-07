@@ -63,8 +63,10 @@ int set_flags(t_list *flags) {
 				bits |= REVERSE;
 			else if (*s == 't')
 				bits |= TIMESORT;
-			else
+			else {
+				ft_printf("ft_ls: illegal option -- %c\nusage: ./ft_ls [-Ralrt] [file ...]", *s);
 				return INVALID;
+			}
 			s++;
 		}
 		flags = flags->next;
