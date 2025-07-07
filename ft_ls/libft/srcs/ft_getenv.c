@@ -19,6 +19,7 @@ static int	ft_match(char *name, char *var, int namelen) {
 	return 0;
 }
 
+// not malloced
 char	*ft_getenv(char *name, char **env)
 {
 	int i;

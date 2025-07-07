@@ -40,6 +40,11 @@ option | description
 - data type sortable by different criteria
 - files in subdirectories
 
+### ls features
+- when multilpe paths are given each arg is first checked for existence, then valid ones are announced (`dir:\n`) and handled. flags apply to all.
+- files go first, then directories are listed.
+- `--` signals the end of flag arguments, so that files starting with `-` can be listed without being interpreted as a flag.
+
 ### file data struct
 
 ```
