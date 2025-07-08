@@ -39,6 +39,7 @@ void display_entries(t_filedata **files, int flags) {
 		}
 		write(1, "\n", 1);
 	}
+	write(1, "\n", 1);
 }
 
 // print the date string in the ls -l format, no '\n'

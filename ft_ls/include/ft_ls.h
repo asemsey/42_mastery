@@ -79,6 +79,7 @@ char		*find_id(unsigned int id, int is_user);
 void		display_entries(t_filedata **files, int flags);
 void		print_modified(time_t seconds, time_t now);
 // 		directories.c
+void		handle_one_dir(t_filedata **dir, int cmd_flags);
 void		handle_dirs(t_filedata **files, int cmd_flags);
 t_list		*dir_to_lst(char *path);
 

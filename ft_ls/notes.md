@@ -3,7 +3,8 @@
 **TO-DO**
 - function for formatting column sizes (bytes, links, usernames)
 	-> keep a var of longest element in column and extend strings to that length
-- missing stat info: users
+- go through formating cases (no entries, one, many, ., .., etc.)
+- add a prefix argument to readdir loop (optional use)
 
 ## about ls
 ### options

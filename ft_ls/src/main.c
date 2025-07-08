@@ -70,9 +70,12 @@ int do_ls(t_ls *data) {
 		set_fileinfo(data->files[i], data->cmd_flags);
 	}
 	// sort_entries(data->files, data->cmd_flags);
-	display_entries(data->files, data->cmd_flags);
-	handle_dirs(data->files, data->cmd_flags);
-
+	if (data->files[0] && !data->files[1]) {
+		handle_one_dir(data->files, data->cmd_flags);
+	} else {
+		display_entries(data->files, data->cmd_flags);
+		handle_dirs(data->files, data->cmd_flags);
+	}
 	return 0;
 }
 
