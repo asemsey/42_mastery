@@ -1,6 +1,6 @@
 #include "../include/ft_ls.h"
 
-t_filedata	**set_paths(t_list *paths, char *pwd);
+t_filedata	**lst_to_filedata(t_list *paths);
 int			set_flags(t_list *flags);
 void		separate_args(int argc, char **argv, t_list **paths, t_list **flags);
 char		*arg_to_path(char *pwd, char *arg);
@@ -28,6 +28,8 @@ char *arg_to_path(char *pwd, char *arg) {
 // split argv into flags and paths (t_lists malloc)
 void separate_args(int argc, char **argv, t_list **paths, t_list **flags) {
 	int flag_end = 0;
+	if (argc == 1)
+		ft_lstadd_back(paths, ft_lstnew("."));
 	for (int i = 1; i < argc; i++) {
 		if (argv[i][0] && argv[i][0] == '-') {
 			if (flag_end) {
@@ -75,15 +77,24 @@ int set_flags(t_list *flags) {
 }
 
 // go through paths list and init filedata to array (array malloc)
-t_filedata **set_paths(t_list *paths, char *pwd) {
+t_filedata **lst_to_filedata(t_list *paths) {
 	t_filedata **files;
+	int size = ft_lstsize(paths);
 	int i = 0;
 
-	files = (t_filedata **)malloc((ft_lstsize(paths) + 1) * sizeof(t_filedata *));
+	if (size == 0) {
+		files = (t_filedata **)malloc(sizeof(t_filedata *) * 2);
+		if (files) {
+			files[0] = init_file_name(ft_strdup("."));
+			files[1] = NULL;
+		}
+		return files;
+	}
+	files = (t_filedata **)malloc((size + 1) * sizeof(t_filedata *));
 	if (!files)
 		return NULL;
 	while (paths) {
-		files[i++] = init_file_name(ft_strdup(paths->content), arg_to_path(pwd, paths->content));
+		files[i++] = init_file_name(ft_strdup(paths->content));
 		paths = paths->next;
 	}
 	files[i] = NULL;

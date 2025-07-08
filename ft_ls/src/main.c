@@ -20,28 +20,59 @@ int	main(int argc, char **argv, char **env) {
 		free_ls_data(&data);
 		return 1;
 	}
-	data.files = set_paths(data.path_args, data.pwd);
+	data.files = lst_to_filedata(data.path_args);
 
-	set_file_info(data.files, data.cmd_flags);
-	// open given directory
-	// DIR *directory = opendir(data.pwd);
-	// if (!directory) {
-	// 	free_data(&data);
-	// 	return 1;
-	// }
-	// // list names of all files separated by two tabs
-	// struct dirent *one_file = readdir(directory);
-	// while (one_file) {
-	// 	ft_printf("%s\t\t", one_file->d_name);
-	// 	one_file = readdir(directory);
-	// }
-	// write(1, "\n", 1);
-	// // clean up
-	// closedir(directory);
+	/*
+	// args are in data.files, flags set
+	// set info for each
+			foreach file in files set_info(file);
+	// sort and display all
+			sort(files, cmd_flags);
+			display(files, cmd_flags);
+	// go into dirs (new func so recursion is considered)
+			foreach file in files
+				if (is_dir)
+					handle_dir(files, cmd_flags);
+		// readdir to list
+					read = all_files_in_dir();
+		// sort and display
+					sort(read, cmd_flags);
+					display(read, cmd_flags);
+		// if -R go into dirs, repeat this last algo
+					if (cmd_flags & R)
+						foreach file in read ..., free when a dir is closed
+	// free and exit
+		free_data(data);
+	*/
 
-	do_ls(&data);
+	if (data.files) {
+		do_ls(&data);
+	}
+	
+	/*
+	DIR *directory = opendir(data.pwd);
+	if (!directory)
+		;
+	struct dirent *one_file = readdir(directory);
+	while (one_file) {
+		one_file = readdir(directory);
+	}
+	closedir(directory);
+	*/
 
 	free_ls_data(&data);
+	return 0;
+}
+
+int do_ls(t_ls *data) {
+	// test_arg_init(data);//test
+	for (int i = 0; data->files[i] != NULL; i++) {
+		set_fileinfo(data->files[i], data->cmd_flags);
+	}
+	// sort_entries(data->files, data->cmd_flags);
+	display_entries(data->files, data->cmd_flags);
+	handle_dirs(data->files, data->cmd_flags);
+
 	return 0;
 }
 
@@ -56,15 +87,4 @@ void free_ls_data(t_ls *data) {
 		ft_lstclear(&(data->flag_args), NULL);
 	if (data->path_args)
 		ft_lstclear(&(data->path_args), NULL);
-}
-
-int do_ls(t_ls *data) {
-	// test_arg_init(data);
-	test_modtime(data);
-	// go through data.files, check if exists and set info according to flags
-		// set error strings in struct
-	// display errors, run ls on rest
-		// illegal option shows nothing but error and usage !
-		// all other errors listed then correct input exec
-	return 0;
 }

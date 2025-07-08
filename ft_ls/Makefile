@@ -3,7 +3,9 @@ NAME		= ft_ls
 
 CFLAGS		= -Wall -Wextra -Werror
 
-SRCS		= main.c filedata.c handle_args.c test_helpers.c file_info.c
+SRCS		= main.c \
+			filedata.c handle_args.c test_helpers.c \
+			file_info.c directories.c format.c
 OBJS		= ${SRCS:.c=.o}
 OBJS		:= $(addprefix obj/, $(OBJS))
 SRCS		:= $(addprefix src/, $(SRCS))

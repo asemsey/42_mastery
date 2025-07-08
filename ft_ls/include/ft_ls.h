@@ -7,8 +7,11 @@
 # include <uuid/uuid.h>
 # include <sys/xattr.h>
 # include <sys/stat.h>
+# include <sys/types.h>
 # include <time.h>
 # include <dirent.h>
+# include <pwd.h>
+# include <grp.h>
 
 # include "../libft/libft.h"
 
@@ -43,13 +46,14 @@ enum e_flag {
 
 struct s_filedata {
 	char				*name;
-	char				*path;// unnecessary?
 	char				f_type;// dir|symlink|file|socket
 	char				permissions[10];
 	off_t				bytes;
 	blkcnt_t			blocks;
 	time_t				modified;
 	nlink_t				links;
+	uid_t				own_user;
+	gid_t				own_group;
 	struct s_filedata	**files;// if f_type is dir this contains files -- should this be linkedlist?
 	int					num_files;// len of `files`
 };
@@ -58,18 +62,26 @@ struct s_filedata {
 
 // 		filedata.c
 t_filedata	*init_filedata();
-t_filedata	*init_file_name(char *name, char *path);
+t_filedata	*init_file_name(char *name);
+t_filedata	**init_dir(char *name);
 void		free_filedata(t_filedata *file);
 // 		handle_args.c
-t_filedata	**set_paths(t_list *paths, char *pwd);
+t_filedata	**lst_to_filedata(t_list *paths);
 int			set_flags(t_list *flags);
 void		separate_args(int argc, char **argv, t_list **paths, t_list **flags);
 char		*arg_to_path(char *pwd, char *arg);
 // 		file_info.c
-void		set_file_info(t_filedata **files, int flags);
+void		set_fileinfo(t_filedata *file, int flags);
 void		set_permissions(mode_t st_mode, char *p);
 char		get_filemode(mode_t st_mode);
+char		*find_id(unsigned int id, int is_user);
+// 		format.c
+void		display_entries(t_filedata **files, int flags);
 void		print_modified(time_t seconds, time_t now);
+// 		directories.c
+void		handle_dirs(t_filedata **files, int cmd_flags);
+t_list		*dir_to_lst(char *path);
+
 
 // 		test_helpers.c
 void		test_arg_init(t_ls *data);

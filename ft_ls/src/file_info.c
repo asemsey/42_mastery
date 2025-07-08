@@ -1,36 +1,69 @@
 #include "../include/ft_ls.h"
 
-void		set_file_info(t_filedata **files, int flags);
+void		set_fileinfo(t_filedata *file, int flags);
 void		set_permissions(mode_t st_mode, char *p);
 char		get_filemode(mode_t st_mode);
-void		print_modified(time_t seconds, time_t now);
-
+char		*find_id(unsigned int id, int is_user);
 
 // ----------------------------------------------------------------------
 
-// go through files and fetch needed info according to flags
-void		set_file_info(t_filedata **files, int flags) {
-	int i;
+// fetch file information using lstat
+void	set_fileinfo(t_filedata *file, int flags) {
 	struct stat filestat;
-	i = 0;
-	while (files && files[i]) {
-		if (lstat(files[i]->name, &filestat) < 0) {
-			ft_printf("ft_ls: %s: No such file or directory\n", files[i++]->name);
-			continue;
-		}
-		files[i]->f_type = get_filemode(filestat.st_mode);
-		if (flags & LONG) {
-			files[i]->bytes = filestat.st_size;
-			files[i]->blocks = filestat.st_blocks;
-			files[i]->links = filestat.st_nlink;
-			files[i]->modified = filestat.st_mtimespec.tv_sec;
-			set_permissions(filestat.st_mode, files[i]->permissions);
-			// HERE
-		}
-		i++;
+	if (lstat(file->name, &filestat) < 0) {
+		ft_printf("ft_ls: %s: No such file or directory\n", file->name);
+		return ;
+	}
+	file->f_type = get_filemode(filestat.st_mode);
+	file->bytes = filestat.st_size;
+	file->modified = filestat.st_mtimespec.tv_sec;
+	if (flags & LONG) {
+		file->blocks = filestat.st_blocks;
+		file->links = filestat.st_nlink;
+		file->own_user = filestat.st_uid;
+		file->own_group = filestat.st_gid;
+		set_permissions(filestat.st_mode, file->permissions);
 	}
 }
 
+char	*find_id(unsigned int id, int is_user) {
+	struct passwd	*user;
+	struct group	*group;
+	if (is_user) {
+		user = (struct passwd *)getpwuid((uid_t)id);
+		if (user)
+			return user->pw_name;
+		return NULL;
+	} else {
+		group = (struct group *)getgrgid((gid_t)id);
+		if (group)
+			return group->gr_name;
+		return NULL;
+	}
+	return NULL;
+}
+
+// return the character associated with the file mode
+char get_filemode(mode_t st_mode) {
+	mode_t newmode = st_mode & S_IFMT;
+	if (newmode == S_IFBLK)
+		return 'b';
+	if (newmode == S_IFCHR)
+		return 'c';
+	if (newmode == S_IFDIR)
+		return 'd';
+	if (newmode == S_IFLNK)
+		return 'l';
+	if (newmode == S_IFSOCK)
+		return 's';
+	if (newmode == S_IFIFO)
+		return 'p';
+	if (newmode == S_IFREG)
+		return '-';
+	return 0;
+}
+
+// create the permission string without the filemode character
 void set_permissions(mode_t st_mode, char *p) {
 	if (ft_strlen(p) < 9)
 		return;
@@ -56,50 +89,6 @@ void set_permissions(mode_t st_mode, char *p) {
 	if (st_mode & S_IXOTH)// HERE: this last one seems more complex...
 		p[8] = 'x';
 	p[9] = '\0';
-}
-
-char get_filemode(mode_t st_mode) {
-	mode_t newmode = st_mode & S_IFMT;
-	if (newmode == S_IFBLK)
-		return 'b';
-	if (newmode == S_IFCHR)
-		return 'c';
-	if (newmode == S_IFDIR)
-		return 'd';
-	if (newmode == S_IFLNK)
-		return 'l';
-	if (newmode == S_IFSOCK)
-		return 's';
-	if (newmode == S_IFIFO)
-		return 'p';
-	if (newmode == S_IFREG)
-		return '-';
-	return 0;
-}
-
-void print_modified(time_t seconds, time_t now) {
-	char *str = ctime(&seconds);
-	char *year = str + 20;
-	char *date = str + 4;
-	time_t diff;
-
-	if (ft_strlen(str) < 25)// format different?
-		return;
-	*(year + 4) = '\0';
-
-	diff = now - seconds;// if past > 0, future < 0
-	if (diff < 0)
-		diff = -diff;
-	if (diff > 15552000) {//six months
-		*(date + 6) = '\0';
-		ft_printf("%s %s", date, year);
-	} else {
-		*(date + 12) = '\0';
-		ft_printf("%s", date);
-	}
-	// Www Mmm dd hh:mm:ss yyyy\n
-	// Mmm dd hh:mm -> Jul  7 10:55
-	// Mmm dd yyyy  -> Jul  7 2025
 }
 
 // mode_t st_mode bits:

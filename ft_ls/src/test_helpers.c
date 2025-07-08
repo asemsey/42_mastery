@@ -9,7 +9,7 @@ void test_arg_init(t_ls *data) {
 	ft_printf("PWD = %s\n", data->pwd);
 	if (data->files) {
 		for (int i = 0; data->files[i] != NULL; i++) {
-			printf("\t%d  |  %s\n", i, data->files[i]->path);
+			ft_printf("\t%d  |  %s\n", i, data->files[i]->name);
 		}
 	}
 	int flags = data->cmd_flags;
@@ -35,16 +35,19 @@ void test_modtime(t_ls *data) {
 		return ;
 	}
 	if (!(data->cmd_flags & LONG)) {
-		while (data->files[i])
-			ft_printf("%s\t\t", data->files[i++]->name);
+		while (data->files[i]) {
+			if (data->files[i]->bytes > 0)
+				ft_printf("%s\t\t", data->files[i]->name);
+			i++;
+		}
 		write(1, "\n", 1);
 		return ;
 	}
 	// -l flag
 	time_t now = time(NULL);
 	while (data->files[i]) {
-		if (data->files[i]->bytes > 0) {
-			ft_printf("%c%s  %d [user]  [user?]  %d ", data->files[i]->f_type, data->files[i]->permissions, data->files[i]->links, data->files[i]->bytes);
+		if (data->files[i]->bytes >= 0) {
+			ft_printf("%c%s  %d [user]  [group]  %d ", data->files[i]->f_type, data->files[i]->permissions, data->files[i]->links, data->files[i]->bytes);
 			print_modified(data->files[i]->modified, now);
 			ft_printf(" %s\n", data->files[i]->name);
 		}

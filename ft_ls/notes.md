@@ -3,7 +3,7 @@
 **TO-DO**
 - function for formatting column sizes (bytes, links, usernames)
 	-> keep a var of longest element in column and extend strings to that length
-- missing stat info: links
+- missing stat info: users
 
 ## about ls
 ### options
