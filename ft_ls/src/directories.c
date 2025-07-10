@@ -2,52 +2,78 @@
 
 t_list		*dir_to_lst(char *path);
 void		handle_one_dir(t_filedata **dir, int cmd_flags);
-void		handle_dirs(t_filedata **files, int cmd_flags);
+void		handle_dirs(t_filedata **files, int cmd_flags, char *prefix);
 int			ignore_dir(char *str);
+char		*create_file_prefix(char *path, char *dirname);
 
 // ----------------------------------------------------------------------
 
-void handle_dirs(t_filedata **files, int cmd_flags) {
+void handle_dirs(t_filedata **files, int cmd_flags, char *prefix) {
+	char *pre = NULL;
 	t_filedata **contents = NULL;
 	if (!files)
 		return;
 	for (int i = 0; files[i] != NULL; i++) {
 		if (files[i]->f_type != 'd' || ignore_dir(files[i]->name))
 			continue;
-		ft_printf("%s:\n", files[i]->name);
-		contents = init_dir(files[i]->name);
+		if (prefix) {
+			pre = create_file_prefix(prefix, files[i]->name);
+			ft_printf("%s:\n", pre);
+			contents = init_dir(pre);
+		} else {
+			ft_printf("%s:\n", files[i]->name);
+			contents = init_dir(files[i]->name);
+		}
 		for (int i = 0; contents[i] != NULL; i++) {
-			set_fileinfo(contents[i], cmd_flags);
+			set_fileinfo(contents[i], cmd_flags, pre);
 		}
 		display_entries(contents, cmd_flags);
 		if (cmd_flags & RECURSIVE)
-			handle_dirs(contents, cmd_flags);
+			handle_dirs(contents, cmd_flags, pre);
 		for (int i = 0; contents[i] != NULL; i++) {
 			free_filedata(contents[i]);
 		}
 		free(contents);
+		if (pre)
+			free(pre);
 	}
+}
+
+// create string: path/dirname (malloc)
+char *create_file_prefix(char *path, char *dirname) {
+	char *tmp;
+	char *res;
+	tmp = ft_strjoin(path, "/");
+	res = ft_strjoin(tmp, dirname);
+	free(tmp);
+	return res;
 }
 
 void handle_one_dir(t_filedata **files, int cmd_flags) {
 	t_filedata **contents = NULL;
+	// char *dirname = NULL;
 	if (!files)
 		return;
 	if (files[0]->f_type != 'd') {
 		display_entries(files, cmd_flags);
 		return;
 	}
-	contents = init_dir(files[0]->name);// need func that adds './' before filename in . case HERE
+	// if (files[0]->name[0] == '.' && !(files[0]->name[1]))// add "./" to dirname (files[0])
+	// 	dirname = create_file_prefix(".", files[0]->name);
+	// else
+	// 	dirname = ft_strdup(files[0]->name);
+	contents = init_dir(files[0]->name);
 	for (int i = 0; contents[i] != NULL; i++) {
-		set_fileinfo(contents[i], cmd_flags);
+		set_fileinfo(contents[i], cmd_flags, files[0]->name);
 	}
 	display_entries(contents, cmd_flags);
 	if (cmd_flags & RECURSIVE)
-		handle_dirs(contents, cmd_flags);
+		handle_dirs(contents, cmd_flags, files[0]->name);
 	for (int i = 0; contents[i] != NULL; i++) {
 		free_filedata(contents[i]);
 	}
 	free(contents);
+	// free(dirname);
 }
 
 t_list *dir_to_lst(char *path) {

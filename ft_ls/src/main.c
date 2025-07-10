@@ -67,14 +67,14 @@ int	main(int argc, char **argv, char **env) {
 int do_ls(t_ls *data) {
 	// test_arg_init(data);//test
 	for (int i = 0; data->files[i] != NULL; i++) {
-		set_fileinfo(data->files[i], data->cmd_flags);
+		set_fileinfo(data->files[i], data->cmd_flags, NULL);
 	}
 	// sort_entries(data->files, data->cmd_flags);
 	if (data->files[0] && !data->files[1]) {
 		handle_one_dir(data->files, data->cmd_flags);
 	} else {
 		display_entries(data->files, data->cmd_flags);
-		handle_dirs(data->files, data->cmd_flags);
+		handle_dirs(data->files, data->cmd_flags, NULL);
 	}
 	return 0;
 }

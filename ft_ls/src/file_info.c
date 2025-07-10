@@ -1,6 +1,6 @@
 #include "../include/ft_ls.h"
 
-void		set_fileinfo(t_filedata *file, int flags);
+void		set_fileinfo(t_filedata *file, int flags, char *prefix);
 void		set_permissions(mode_t st_mode, char *p);
 char		get_filemode(mode_t st_mode);
 char		*find_id(unsigned int id, int is_user);
@@ -8,12 +8,19 @@ char		*find_id(unsigned int id, int is_user);
 // ----------------------------------------------------------------------
 
 // fetch file information using lstat
-void	set_fileinfo(t_filedata *file, int flags) {
+void	set_fileinfo(t_filedata *file, int flags, char *prefix) {
 	struct stat filestat;
-	if (lstat(file->name, &filestat) < 0) {
+	char *full_name;
+	if (prefix)
+		full_name = create_file_prefix(prefix, file->name);
+	else
+		full_name = ft_strdup(file->name);
+	if (lstat(full_name, &filestat) < 0) {
 		ft_printf("ft_ls: %s: No such file or directory\n", file->name);
+		free(full_name);
 		return ;
 	}
+	free(full_name);
 	file->f_type = get_filemode(filestat.st_mode);
 	file->bytes = filestat.st_size;
 	file->modified = filestat.st_mtimespec.tv_sec;

@@ -71,7 +71,7 @@ int			set_flags(t_list *flags);
 void		separate_args(int argc, char **argv, t_list **paths, t_list **flags);
 char		*arg_to_path(char *pwd, char *arg);
 // 		file_info.c
-void		set_fileinfo(t_filedata *file, int flags);
+void		set_fileinfo(t_filedata *file, int flags, char *prefix);
 void		set_permissions(mode_t st_mode, char *p);
 char		get_filemode(mode_t st_mode);
 char		*find_id(unsigned int id, int is_user);
@@ -80,7 +80,8 @@ void		display_entries(t_filedata **files, int flags);
 void		print_modified(time_t seconds, time_t now);
 // 		directories.c
 void		handle_one_dir(t_filedata **dir, int cmd_flags);
-void		handle_dirs(t_filedata **files, int cmd_flags);
+void		handle_dirs(t_filedata **files, int cmd_flags, char *prefix);
+char		*create_file_prefix(char *path, char *dirname);
 t_list		*dir_to_lst(char *path);
 
 
