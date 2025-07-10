@@ -1,4 +1,4 @@
-#include "../include/ft_ls.h"
+#include "ft_ls.h"
 
 void		display_entries(t_filedata **files, int flags);
 void		print_modified(time_t seconds, time_t now);

@@ -1,4 +1,4 @@
-#include "../include/ft_ls.h"
+#include "ft_ls.h"
 
 t_filedata	**lst_to_filedata(t_list *paths);
 int			set_flags(t_list *flags);

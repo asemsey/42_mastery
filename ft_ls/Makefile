@@ -1,5 +1,6 @@
 
 NAME		= ft_ls
+CC			= gcc
 
 CFLAGS		= -Wall -Wextra -Werror
 
@@ -13,7 +14,7 @@ SRCS		:= $(addprefix src/, $(SRCS))
 # LIBFT_URL	= https://github.com/asemsey/42_libft.git
 LIBFT_PATH	= ./libft
 LIBFT		= $(LIBFT_PATH)/libft.a
-HEADERS		= -I ./include -I $(LIBFT_PATH)/libft.h
+HEADERS		= -I ./include -I $(LIBFT_PATH) -I /usr/include/uuid
 
 all: $(LIBFT) $(NAME)
 

@@ -1,4 +1,4 @@
-#include "../include/ft_ls.h"
+#include "ft_ls.h"
 
 void		set_fileinfo(t_filedata *file, int flags, char *prefix);
 void		set_permissions(mode_t st_mode, char *p);
@@ -24,6 +24,7 @@ void	set_fileinfo(t_filedata *file, int flags, char *prefix) {
 	file->f_type = get_filemode(filestat.st_mode);
 	file->bytes = filestat.st_size;
 	file->modified = filestat.st_mtimespec.tv_sec;
+	// file-> modified = filestat.st_mtime;
 	if (flags & LONG) {
 		file->blocks = filestat.st_blocks;
 		file->links = filestat.st_nlink;

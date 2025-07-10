@@ -1,4 +1,4 @@
-#include "../include/ft_ls.h"
+#include "ft_ls.h"
 
 t_filedata	*init_filedata();
 t_filedata	**init_dir(char *name);

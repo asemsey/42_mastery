@@ -1,4 +1,4 @@
-# include "../include/ft_ls.h"
+#include "ft_ls.h"
 
 void		test_arg_init(t_ls *data);
 void		test_modtime(t_ls *data);

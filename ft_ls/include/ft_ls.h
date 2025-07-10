@@ -13,7 +13,7 @@
 # include <pwd.h>
 # include <grp.h>
 
-# include "../libft/libft.h"
+# include "libft.h"
 
 // data -------------------------------------
 

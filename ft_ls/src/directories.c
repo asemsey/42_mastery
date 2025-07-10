@@ -1,4 +1,4 @@
-#include "../include/ft_ls.h"
+#include "ft_ls.h"
 
 t_list		*dir_to_lst(char *path);
 void		handle_one_dir(t_filedata **dir, int cmd_flags);
@@ -51,17 +51,12 @@ char *create_file_prefix(char *path, char *dirname) {
 
 void handle_one_dir(t_filedata **files, int cmd_flags) {
 	t_filedata **contents = NULL;
-	// char *dirname = NULL;
 	if (!files)
 		return;
 	if (files[0]->f_type != 'd') {
 		display_entries(files, cmd_flags);
 		return;
 	}
-	// if (files[0]->name[0] == '.' && !(files[0]->name[1]))// add "./" to dirname (files[0])
-	// 	dirname = create_file_prefix(".", files[0]->name);
-	// else
-	// 	dirname = ft_strdup(files[0]->name);
 	contents = init_dir(files[0]->name);
 	for (int i = 0; contents[i] != NULL; i++) {
 		set_fileinfo(contents[i], cmd_flags, files[0]->name);
@@ -73,7 +68,6 @@ void handle_one_dir(t_filedata **files, int cmd_flags) {
 		free_filedata(contents[i]);
 	}
 	free(contents);
-	// free(dirname);
 }
 
 t_list *dir_to_lst(char *path) {

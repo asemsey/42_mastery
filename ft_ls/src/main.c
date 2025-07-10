@@ -1,4 +1,4 @@
-#include "../include/ft_ls.h"
+#include "ft_ls.h"
 
 void	free_ls_data(t_ls *data);
 int		do_ls(t_ls *data);
