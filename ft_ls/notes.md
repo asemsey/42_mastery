@@ -1,8 +1,10 @@
 # ft_ls
 
 **TO-DO**
+- merge_sort still incorrect and sloppy, see logs
 - function for formatting column sizes (bytes, links, usernames)
 	-> keep a var of longest element in column and extend strings to that length
+- add 'total x' to top of long format
 - write tests!!!
 
 ## about ls

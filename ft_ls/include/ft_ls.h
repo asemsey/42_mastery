@@ -22,7 +22,7 @@ typedef struct s_filedata t_filedata;
 // main data structure
 typedef struct s_ls {
 	int			cmd_flags;
-	t_filedata	**files;
+	t_list		*files;
 	char		*pwd;
 	t_list		*flag_args;
 	t_list		*path_args;
@@ -54,7 +54,7 @@ struct s_filedata {
 	nlink_t				links;
 	uid_t				own_user;
 	gid_t				own_group;
-	struct s_filedata	**files;// if f_type is dir this contains files -- should this be linkedlist?
+	t_list				*files;// if f_type is dir this contains files -- should this be linkedlist?
 	int					num_files;// len of `files`
 };
 
@@ -63,10 +63,11 @@ struct s_filedata {
 // 		filedata.c
 t_filedata	*init_filedata();
 t_filedata	*init_file_name(char *name);
-t_filedata	**init_dir(char *name);
-void		free_filedata(t_filedata *file);
+t_list		*init_dir(char *name);
+void		free_filedata(void *file);
 // 		handle_args.c
-t_filedata	**lst_to_filedata(t_list *paths);
+// t_filedata	**lst_to_filedata(t_list *paths);
+t_list		*names_to_filedata(t_list *paths);
 int			set_flags(t_list *flags);
 void		separate_args(int argc, char **argv, t_list **paths, t_list **flags);
 char		*arg_to_path(char *pwd, char *arg);
@@ -76,17 +77,24 @@ void		set_permissions(mode_t st_mode, char *p);
 char		get_filemode(mode_t st_mode);
 char		*find_id(unsigned int id, int is_user);
 // 		format.c
-void		display_entries(t_filedata **files, int flags);
+void		display_entries(t_list *files, int flags);
+// void		display_entries(t_filedata **files, int flags);
 void		print_modified(time_t seconds, time_t now);
 // 		directories.c
-void		handle_one_dir(t_filedata **dir, int cmd_flags);
-void		handle_dirs(t_filedata **files, int cmd_flags, char *prefix);
+void		handle_one_dir(t_list *files, int cmd_flags);
+// void		handle_one_dir(t_filedata **dir, int cmd_flags);
+void		handle_dirs(t_list *files, int cmd_flags, char *prefix);
+// void		handle_dirs(t_filedata **files, int cmd_flags, char *prefix);
 char		*create_file_prefix(char *path, char *dirname);
 t_list		*dir_to_lst(char *path);
+// 		mergesort.c
+t_list		*merge_sort(t_list *lst, t_list *(*comp)(t_list *, t_list *), int len);//SORT
+// t_list		*merge_sort(t_list *lst, t_list *(*comp)(t_list *, t_list *));
+t_list		*comp_alpha(t_list *l1, t_list *l2);
 
 
 // 		test_helpers.c
 void		test_arg_init(t_ls *data);
-void		test_modtime(t_ls *data);
+// void		test_modtime(t_ls *data);
 
 #endif

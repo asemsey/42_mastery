@@ -1,6 +1,7 @@
 #include "ft_ls.h"
 
-t_filedata	**lst_to_filedata(t_list *paths);
+t_list		*names_to_filedata(t_list *paths);
+// t_filedata	**lst_to_filedata(t_list *paths);
 int			set_flags(t_list *flags);
 void		separate_args(int argc, char **argv, t_list **paths, t_list **flags);
 char		*arg_to_path(char *pwd, char *arg);
@@ -47,6 +48,8 @@ void separate_args(int argc, char **argv, t_list **paths, t_list **flags) {
 			ft_lstadd_back(paths, ft_lstnew(argv[i]));// path
 		}
 	}
+	if (ft_lstsize(*paths) < 1)
+		ft_lstadd_back(paths, ft_lstnew("."));
 }
 
 // go through flag strings and set bitflag
@@ -76,28 +79,38 @@ int set_flags(t_list *flags) {
 	return bits;
 }
 
-// go through paths list and init filedata to array (array malloc)
-t_filedata **lst_to_filedata(t_list *paths) {
-	t_filedata **files;
-	int size = ft_lstsize(paths);
-	int i = 0;
+// // go through paths list and init filedata to array (array malloc)
+// t_filedata **lst_to_filedata(t_list *paths) {
+// 	t_filedata **files;
+// 	int size = ft_lstsize(paths);
+// 	int i = 0;
 
-	if (size == 0) {
-		files = (t_filedata **)malloc(sizeof(t_filedata *) * 2);
-		if (files) {
-			files[0] = init_file_name(ft_strdup("."));
-			files[1] = NULL;
-		}
-		return files;
-	}
-	files = (t_filedata **)malloc((size + 1) * sizeof(t_filedata *));
-	if (!files)
-		return NULL;
+// 	if (size == 0) {
+// 		files = (t_filedata **)malloc(sizeof(t_filedata *) * 2);
+// 		if (files) {
+// 			files[0] = init_file_name(ft_strdup("."));
+// 			files[1] = NULL;
+// 		}
+// 		return files;
+// 	}
+// 	files = (t_filedata **)malloc((size + 1) * sizeof(t_filedata *));
+// 	if (!files)
+// 		return NULL;
+// 	while (paths) {
+// 		files[i++] = init_file_name(ft_strdup(paths->content));
+// 		paths = paths->next;
+// 	}
+// 	files[i] = NULL;
+// 	return files;
+// }
+
+// go through paths list and init filedata into list (t_list malloc)
+t_list *names_to_filedata(t_list *paths) { //HERE can maybe be improved by adding param to say if was malloced and doing changes in place, no returning
+	t_list *files = NULL;
 	while (paths) {
-		files[i++] = init_file_name(ft_strdup(paths->content));
+		ft_lstadd_back(&files, ft_lstnew(init_file_name(ft_strdup(paths->content))));
 		paths = paths->next;
 	}
-	files[i] = NULL;
 	return files;
 }
 

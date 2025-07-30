@@ -1,9 +1,9 @@
 #include "ft_ls.h"
 
 t_filedata	*init_filedata();
-t_filedata	**init_dir(char *name);
+t_list		*init_dir(char *name);
 t_filedata	*init_file_name(char *name);
-void		free_filedata(t_filedata *file);
+void		free_filedata(void *file);
 
 // ----------------------------------------------------------------------
 
@@ -29,17 +29,17 @@ t_filedata	*init_file_name(char *name) {
 // 	return init;
 // }
 
-// initialize a filedata array from dir contents (malloc)
-t_filedata	**init_dir(char *name) {
-	t_filedata **init;
+// initialize a filedata list from dir contents (malloc)
+t_list	*init_dir(char *name) {
+	// t_list	*init;
 	t_list	*files;
 
 	files = dir_to_lst(name);
 	if (!files)
 		return NULL;
-	init = lst_to_filedata(files);
-	ft_lstclear(&files, free);
-	return init;
+	// init = names_to_filedata(files);
+	// ft_lstclear(&files, free);
+	return files;
 }
 
 // initialize a filedata object (malloc)
@@ -61,19 +61,15 @@ t_filedata	*init_filedata() {
 	return init;
 }
 
-void free_filedata(t_filedata *file) {
-	int i;
+void free_filedata(void *file) {
 
 	if (!file)
 		return ;
-	if (file->num_files > 0) {
-		i = 0;
-		while (i < file->num_files)
-			free_filedata(file->files[i++]);
-		free(file->files);
-	}
-	if (file->name)
-		free(file->name);
+	t_filedata *f = (t_filedata *)file;
+	if (f->files)
+		ft_lstclear(&f->files, free_filedata);
+	if (f->name)
+		free(f->name);
 	free(file);
 	return ;
 }

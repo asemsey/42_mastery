@@ -20,8 +20,8 @@ int	main(int argc, char **argv, char **env) {
 		free_ls_data(&data);
 		return 1;
 	}
-	data.files = lst_to_filedata(data.path_args);
 
+	data.files = names_to_filedata(data.path_args);
 	/*
 	// args are in data.files, flags set
 	// set info for each
@@ -48,17 +48,6 @@ int	main(int argc, char **argv, char **env) {
 	if (data.files) {
 		do_ls(&data);
 	}
-	
-	/*
-	DIR *directory = opendir(data.pwd);
-	if (!directory)
-		;
-	struct dirent *one_file = readdir(directory);
-	while (one_file) {
-		one_file = readdir(directory);
-	}
-	closedir(directory);
-	*/
 
 	free_ls_data(&data);
 	return 0;
@@ -66,13 +55,18 @@ int	main(int argc, char **argv, char **env) {
 
 int do_ls(t_ls *data) {
 	// test_arg_init(data);//test
-	for (int i = 0; data->files[i] != NULL; i++) {
-		set_fileinfo(data->files[i], data->cmd_flags, NULL);
+	for (t_list *tmp = data->files; tmp != NULL; tmp = tmp->next) {
+		set_fileinfo((t_filedata *)tmp->content, data->cmd_flags, NULL);
 	}
+	// for (int i = 0; data->files[i] != NULL; i++) {
+	// 	set_fileinfo(data->files[i], data->cmd_flags, NULL);
+	// }
+
 	// sort_entries(data->files, data->cmd_flags);
-	if (data->files[0] && !data->files[1]) {
+	if (data->files && !data->files->next) {
 		handle_one_dir(data->files, data->cmd_flags);
 	} else {
+		data->files = merge_sort(data->files, comp_alpha, ft_lstsize(data->files));//SORT
 		display_entries(data->files, data->cmd_flags);
 		handle_dirs(data->files, data->cmd_flags, NULL);
 	}
@@ -80,12 +74,8 @@ int do_ls(t_ls *data) {
 }
 
 void free_ls_data(t_ls *data) {
-	if (data->files) {
-		for (int i = 0; data->files[i] != NULL; i++) {
-			free_filedata(data->files[i]);
-		}
-		free(data->files);
-	}
+	if (data->files)
+		ft_lstclear(&(data->files), free_filedata);
 	if (data->flag_args)
 		ft_lstclear(&(data->flag_args), NULL);
 	if (data->path_args)

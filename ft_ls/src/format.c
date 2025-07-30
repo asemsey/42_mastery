@@ -1,46 +1,93 @@
 #include "ft_ls.h"
 
-void		display_entries(t_filedata **files, int flags);
+void		display_entries(t_list *files, int flags);
+// void		display_entries(t_filedata **files, int flags);
 void		print_modified(time_t seconds, time_t now);
 
 // ----------------------------------------------------------------------
 
-void display_entries(t_filedata **files, int flags) {
+void display_entries(t_list *files, int flags) {
 	char *user;
+	t_list *file = files;
 	if (!files)
 		return ;
 	if (flags & LONG) {// case -l
 		time_t now = time(NULL);
 		// display total blocks HERE
-		for (int i = 0; files[i] != NULL; i++) {
-			if (!(flags & HIDDEN) && files[i]->name[0] == '.')
+		while (file) {
+			t_filedata *data = (t_filedata *)file->content;
+			if (!(flags & HIDDEN) && data->name[0] == '.') {
+				file = file->next;
 				continue;
-			if (files[i]->bytes >= 0) {
-				user = find_id(files[i]->own_user, 1);
-				if (user)
-					ft_printf("%c%s  %d %s  ", files[i]->f_type, files[i]->permissions, files[i]->links, user);
-				else
-					ft_printf("%c%s  %d %u  ", files[i]->f_type, files[i]->permissions, files[i]->links, files[i]->own_user);
-				user = find_id(files[i]->own_group, 0);
-				if (user)
-					ft_printf("%s  %d ", user, files[i]->bytes);
-				else
-					ft_printf("%u  %d ", files[i]->own_group, files[i]->bytes);
-				print_modified(files[i]->modified, now);
-				ft_printf(" %s\n", files[i]->name);
 			}
+			if (data->bytes >= 0) {
+				user = find_id(data->own_user, 1);
+				if (user)
+					ft_printf("%c%s  %d %s  ", data->f_type, data->permissions, data->links, user);
+				else
+					ft_printf("%c%s  %d %u  ", data->f_type, data->permissions, data->links, data->own_user);
+				user = find_id(data->own_group, 0);
+				if (user)
+					ft_printf("%s  %d ", user, data->bytes);
+				else
+					ft_printf("%u  %d ", data->own_group, data->bytes);
+				print_modified(data->modified, now);
+				ft_printf(" %s\n", data->name);
+			}
+			file = file->next;
 		}
 	} else {// default
-		for (int i = 0; files[i] != NULL; i++) {
-			if (!(flags & HIDDEN) && files[i]->name[0] == '.')
+		// display total blocks HERE (wait no thats long form only right?)
+		while (file) {
+			t_filedata *data = (t_filedata *)file->content;
+			if (!(flags & HIDDEN) && data->name[0] == '.') {
+				file = file->next;
 				continue;
-			if (files[i]->bytes >= 0)
-				ft_printf("%s\t\t", files[i]->name);
+			}
+			if (data->bytes >= 0)
+				ft_printf("%s\t\t", data->name);
+			file = file->next;
 		}
 		write(1, "\n", 1);
 	}
-	write(1, "\n", 1);
+	write(1, "\n", 1);//HERE this results in extra newline at the end of output
 }
+// void display_entries(t_filedata **files, int flags) {
+// 	char *user;
+// 	if (!files)
+// 		return ;
+// 	if (flags & LONG) {// case -l
+// 		time_t now = time(NULL);
+// 		// display total blocks HERE
+// 		for (int i = 0; files[i] != NULL; i++) {
+// 			if (!(flags & HIDDEN) && files[i]->name[0] == '.')
+// 				continue;
+// 			if (files[i]->bytes >= 0) {
+// 				user = find_id(files[i]->own_user, 1);
+// 				if (user)
+// 					ft_printf("%c%s  %d %s  ", files[i]->f_type, files[i]->permissions, files[i]->links, user);
+// 				else
+// 					ft_printf("%c%s  %d %u  ", files[i]->f_type, files[i]->permissions, files[i]->links, files[i]->own_user);
+// 				user = find_id(files[i]->own_group, 0);
+// 				if (user)
+// 					ft_printf("%s  %d ", user, files[i]->bytes);
+// 				else
+// 					ft_printf("%u  %d ", files[i]->own_group, files[i]->bytes);
+// 				print_modified(files[i]->modified, now);
+// 				ft_printf(" %s\n", files[i]->name);
+// 			}
+// 		}
+// 	} else {// default
+// 		for (int i = 0; files[i] != NULL; i++) {
+// 			if (!(flags & HIDDEN) && files[i]->name[0] == '.')
+// 				continue;
+// 			if (files[i]->bytes >= 0)
+// 				ft_printf("%s\t\t", files[i]->name);
+// 		}
+// 		write(1, "\n", 1);
+// 	}
+// 	write(1, "\n", 1);
+// }
 
 // print the date string in the ls -l format, no '\n'
 void print_modified(time_t seconds, time_t now) {

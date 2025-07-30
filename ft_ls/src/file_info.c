@@ -11,10 +11,13 @@ char		*find_id(unsigned int id, int is_user);
 void	set_fileinfo(t_filedata *file, int flags, char *prefix) {
 	struct stat filestat;
 	char *full_name;
+	if (!file)
+		return ;
 	if (prefix)
 		full_name = create_file_prefix(prefix, file->name);
 	else
 		full_name = ft_strdup(file->name);
+	// ft_printf("DEBUG full=%s - pre=%s\n", full_name, prefix);
 	if (lstat(full_name, &filestat) < 0) {
 		ft_printf("ft_ls: %s: No such file or directory\n", file->name);
 		free(full_name);
@@ -23,8 +26,8 @@ void	set_fileinfo(t_filedata *file, int flags, char *prefix) {
 	free(full_name);
 	file->f_type = get_filemode(filestat.st_mode);
 	file->bytes = filestat.st_size;
-	file->modified = filestat.st_mtimespec.tv_sec;
-	// file-> modified = filestat.st_mtime;
+	// file->modified = filestat.st_mtimespec.tv_sec;// macos
+	file->modified = filestat.st_mtime;// linux
 	if (flags & LONG) {
 		file->blocks = filestat.st_blocks;
 		file->links = filestat.st_nlink;
