@@ -14,6 +14,7 @@ _SRCS = ft_atoi.c ft_bzero.c ft_calloc.c ft_isalnum.c ft_isalpha.c ft_isascii.c\
 	ft_strrchr.c ft_strtrim.c ft_substr.c ft_tolower.c ft_toupper.c
 _BSRCS = ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c ft_lstadd_back.c\
 	ft_lstdelone.c ft_lstclear.c ft_lstiter.c ft_lstmap.c\
+	ft_lstpushin.c ft_lstpopout.c ft_lstswap.c\
 	ft_getenv.c ft_putnbr_u.c ft_puthex.c ft_printf.c ft_put1.c ft_put2.c ft_digits.c
 SRCS = $(addprefix $(SRC_DIR)/, $(_SRCS))
 BSRCS = $(addprefix $(SRC_DIR)/, $(_BSRCS))

@@ -1,62 +1,41 @@
 #include "ft_ls.h"
 
-t_list		*merge_sort(t_list *lst, t_list *(*comp)(t_list *, t_list *), int len);
-// t_list	*merge_sort(t_list *lst, t_list *(*comp)(t_list *, t_list *));
+void	merge_sort(t_list **lst, t_list *(*comp)(t_list *, t_list *), int len);
+t_list	*comp_time(t_list *l1, t_list *l2);
 t_list	*comp_alpha(t_list *l1, t_list *l2);
 
 // ----------------------------------------------------------------------
 
-t_list		*merge_sort(t_list *lst, t_list *(*comp)(t_list *, t_list *), int len) {
-	// split in half using pointers
-	t_list *f1 = lst;
-	t_list *f2 = lst;
+void		merge_sort(t_list **lst, t_list *(*comp)(t_list *, t_list *), int len) {
 	t_list *c = NULL;
-	t_list *result = NULL;
-	int i = 1;
-
-	ft_printf("DEBUG called merge_sort len=%d lst=%s\n", len, ((t_filedata *)(lst->content))->name);
-	if (!lst || !lst->next || len < 1) {
-		ft_printf("OOF len=%d\n", len);
-		return lst;
+	t_list *f1 = NULL;
+	t_list *f2 = NULL;
+	t_list *buf = NULL;
+	// if len<3 compare, swap, return
+	if (len < 3) {
+		c = comp(*lst, (*lst)->next);
+		if (c == (*lst)->next)
+			ft_lstswap(lst);
+		return;
 	}
-	while (i <= len/2) {
-		if (!f2)
-			break;
-		f2 = f2->next;
-		i++;
-		ft_printf("DEBUG set f2=%s\n", ((t_filedata *)(f2->content))->name);
-	}
-	// while (i < len) {
-	// 	lst = lst->next;
-	// }
-	// lst->next = NULL;//separate f1 from f2
-	if (len > 1) {
-		ft_printf("DEBUG call f1\n");
-		f1 = merge_sort(f1, comp, len / 2 + len % 2);
-		ft_printf("DEBUG call f2\n");
-		f2 = merge_sort(f2, comp, len / 2);//SORT
-	}
-	while (f1 && f2 && f1->content && f2->content && (i < len/2 + len%2)) {
+	// for i=0;i<(len/2+len%2);i++   f2 = f2.next
+	for (int i = 0; i < (len/2 + len%2);i++)
+		ft_lstadd_back(&f1, ft_lstpopout(lst, (*lst)->content));
+	for (int i = 0; i < (len/2);i++)
+		ft_lstadd_back(&f2, ft_lstpopout(lst, (*lst)->content));
+	merge_sort(&f1, comp, len/2+len%2);
+	merge_sort(&f2, comp, len/2);
+	// into result list:
+	while (f1 || f2) {
 		c = comp(f1, f2);
-		ft_printf("DEBUG big loop comp=%s\n", ((t_filedata *)(c->content))->name);
-		if (!c) {
-			ft_printf("ERROR null response from comparison\n");
+		if (!c)
 			break;
-		}
-		ft_lstadd_back(&result, c);
-		if (c == f1) {
-			i++;
-			f1 = f1->next;
-		}
-		else
-			f2 = f2->next;
+		if (c == f1)
+			ft_lstadd_back(&buf, ft_lstpopout(&f1, c->content));
+		if (c == f2)
+			ft_lstadd_back(&buf, ft_lstpopout(&f2, c->content));
 	}
-	if (f1 && f1->content)
-		ft_lstadd_back(&result, f1);
-	else if (f2 && f2->content)
-		ft_lstadd_back(&result, f2);
-	ft_printf("ft_ls: merge_sort returns\n");
-	return result;
+	ft_lstpushin(lst, buf);
 }
 
 t_list	*comp_alpha(t_list *l1, t_list *l2) {
@@ -77,6 +56,23 @@ t_list	*comp_alpha(t_list *l1, t_list *l2) {
 	if (c == 0) // return shorter one
 		return (len1 <= len2 ? l1 : l2);
 	return (c < 0 ? l1 : l2);
+}
+
+t_list	*comp_time(t_list *l1, t_list *l2) {
+	// NULL checks
+	if (!l1 || !l1->content) {
+		if (l2 && l2->content)
+			return l2;
+		return NULL;
+	}
+	if (!l2 || !l2->content)
+		return l1;
+
+	t_filedata *f1 = (t_filedata *)l1->content;
+	t_filedata *f2 = (t_filedata *)l2->content;
+	if (f1->modified > f2->modified)
+		return l1;
+	return l2;
 }
 
 // DEBUG OUTPUT

@@ -68,6 +68,9 @@ void	ft_lstdelone(t_list *lst, void (*del)(void *));
 void	ft_lstclear(t_list **lst, void (*del)(void *));
 void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
+void	ft_lstpushin(t_list **lst, t_list *push);//mine
+t_list	*ft_lstpopout(t_list **lst, void *target);//mine
+void	ft_lstswap(t_list **lst);//mine
 
 void	ft_puthex(unsigned int n, char *base);
 void	ft_putnbr_u(unsigned int n);

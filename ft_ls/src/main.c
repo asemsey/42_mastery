@@ -20,8 +20,16 @@ int	main(int argc, char **argv, char **env) {
 		free_ls_data(&data);
 		return 1;
 	}
-
 	data.files = names_to_filedata(data.path_args);
+
+	if (data.files) {
+		do_ls(&data);
+	}
+
+	free_ls_data(&data);
+	return 0;
+}
+
 	/*
 	// args are in data.files, flags set
 	// set info for each
@@ -45,14 +53,6 @@ int	main(int argc, char **argv, char **env) {
 		free_data(data);
 	*/
 
-	if (data.files) {
-		do_ls(&data);
-	}
-
-	free_ls_data(&data);
-	return 0;
-}
-
 int do_ls(t_ls *data) {
 	// test_arg_init(data);//test
 	for (t_list *tmp = data->files; tmp != NULL; tmp = tmp->next) {
@@ -66,7 +66,7 @@ int do_ls(t_ls *data) {
 	if (data->files && !data->files->next) {
 		handle_one_dir(data->files, data->cmd_flags);
 	} else {
-		data->files = merge_sort(data->files, comp_alpha, ft_lstsize(data->files));//SORT
+		merge_sort(&data->files, ((data->cmd_flags & TIMESORT) ? comp_time : comp_alpha), ft_lstsize(data->files));//SORT
 		display_entries(data->files, data->cmd_flags);
 		handle_dirs(data->files, data->cmd_flags, NULL);
 	}

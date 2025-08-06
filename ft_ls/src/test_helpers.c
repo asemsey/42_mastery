@@ -1,7 +1,8 @@
 #include "ft_ls.h"
 
 void		test_arg_init(t_ls *data);
-void		test_modtime(t_ls *data);
+// void		test_modtime(t_ls *data);
+void		lst_print(t_list *lst, int len);
 
 // ----------------------------------------------------------------------
 
@@ -32,6 +33,20 @@ void test_arg_init(t_ls *data) {
 	if (flags & INVALID)
 		ft_printf("INVALID (!!!)\n");
 }
+
+// has to contain t_filedata
+void lst_print(t_list *lst, int len) {
+	int i = 0;
+	t_filedata *data;
+	while (lst && i<len) {
+		data = (t_filedata *)lst->content;
+		ft_printf("\t%s\n", data->name);
+		// ft_printf("\t%s\n", (char *)lst->content);
+		i++;
+		lst = lst->next;
+	}
+}
+
 // void test_arg_init(t_ls *data) {
 // 	ft_printf("PWD = %s\n", data->pwd);
 // 	if (data->files) {
