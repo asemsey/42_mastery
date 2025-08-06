@@ -66,7 +66,7 @@ int do_ls(t_ls *data) {
 	if (data->files && !data->files->next) {
 		handle_one_dir(data->files, data->cmd_flags);
 	} else {
-		merge_sort(&data->files, ((data->cmd_flags & TIMESORT) ? comp_time : comp_alpha), ft_lstsize(data->files));//SORT
+		merge_sort(&data->files, ((data->cmd_flags & TIMESORT) ? comp_time : comp_alpha), ft_lstsize(data->files), (data->cmd_flags & REVERSE));//SORT
 		display_entries(data->files, data->cmd_flags);
 		handle_dirs(data->files, data->cmd_flags, NULL);
 	}

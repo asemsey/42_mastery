@@ -88,9 +88,9 @@ void		handle_dirs(t_list *files, int cmd_flags, char *prefix);
 char		*create_file_prefix(char *path, char *dirname);
 t_list		*dir_to_lst(char *path);
 // 		mergesort.c
-void		merge_sort(t_list **lst, t_list *(*comp)(t_list *, t_list *), int len);//SORT
-t_list		*comp_time(t_list *l1, t_list *l2);
-t_list		*comp_alpha(t_list *l1, t_list *l2);
+void		merge_sort(t_list **lst, t_list *(*comp)(t_list *, t_list *, int), int len, int reverse);
+t_list		*comp_time(t_list *l1, t_list *l2, int reverse);
+t_list		*comp_alpha(t_list *l1, t_list *l2, int reverse);
 
 
 // 		test_helpers.c

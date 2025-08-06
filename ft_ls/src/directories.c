@@ -32,7 +32,7 @@ void handle_dirs(t_list *files, int cmd_flags, char *prefix) {
 		for (t_list *t = data->files; t != NULL; t = t->next) {
 			set_fileinfo((t_filedata *)t->content, cmd_flags, (pre == NULL ? data->name: pre));
 		}
-		merge_sort(&data->files, ((cmd_flags & TIMESORT) ? comp_time : comp_alpha), ft_lstsize(data->files));//SORT
+		merge_sort(&data->files, ((cmd_flags & TIMESORT) ? comp_time : comp_alpha), ft_lstsize(data->files), (cmd_flags & REVERSE));//SORT
 		display_entries(data->files, cmd_flags);
 		if (cmd_flags & RECURSIVE)
 			handle_dirs(data->files, cmd_flags, pre);
@@ -95,7 +95,7 @@ void handle_one_dir(t_list *files, int cmd_flags) {
 	for (t_list *t = data->files; t != NULL; t = t->next) {
 		set_fileinfo((t_filedata *)t->content, cmd_flags, data->name);
 	}
-	merge_sort(&data->files, ((cmd_flags & TIMESORT) ? comp_time : comp_alpha), ft_lstsize(data->files));//SORT
+	merge_sort(&data->files, ((cmd_flags & TIMESORT) ? comp_time : comp_alpha), ft_lstsize(data->files), (cmd_flags & REVERSE));//SORT
 	display_entries(data->files, cmd_flags);
 	if (cmd_flags & RECURSIVE)
 		handle_dirs(data->files, cmd_flags, data->name);
