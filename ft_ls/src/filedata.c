@@ -1,7 +1,6 @@
 #include "ft_ls.h"
 
 t_filedata	*init_filedata();
-t_list		*init_dir(char *name);
 t_filedata	*init_file_name(char *name);
 void		free_filedata(void *file);
 
@@ -16,30 +15,6 @@ t_filedata	*init_file_name(char *name) {
 		return NULL;
 	init->name = name;
 	return init;
-}
-
-// t_filedata	*init_file_name(char *name, char *path) {
-// 	t_filedata *init;
-
-// 	init = init_filedata();
-// 	if (!init)
-// 		return NULL;
-// 	init->path = path;
-// 	init->name = name;
-// 	return init;
-// }
-
-// initialize a filedata list from dir contents (malloc)
-t_list	*init_dir(char *name) {
-	// t_list	*init;
-	t_list	*files;
-
-	files = dir_to_lst(name);
-	if (!files)
-		return NULL;
-	// init = names_to_filedata(files);
-	// ft_lstclear(&files, free);
-	return files;
 }
 
 // initialize a filedata object (malloc)

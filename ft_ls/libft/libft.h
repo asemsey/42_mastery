@@ -71,6 +71,8 @@ t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 void	ft_lstpushin(t_list **lst, t_list *push);//mine
 t_list	*ft_lstpopout(t_list **lst, void *target);//mine
 void	ft_lstswap(t_list **lst);//mine
+int		ft_max(int a, int b);//mine
+
 
 void	ft_puthex(unsigned int n, char *base);
 void	ft_putnbr_u(unsigned int n);

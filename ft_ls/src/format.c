@@ -1,96 +1,42 @@
 #include "ft_ls.h"
 
-void		display_entries(t_list *files, int flags);
-// void		display_entries(t_filedata **files, int flags);
-void		print_modified(time_t seconds, time_t now);
+int			size_columns(t_list *files, int sizes[4], int flags);
+void		display_modified(time_t seconds, time_t now);
+void		print_space(int n);
 
 // ----------------------------------------------------------------------
 
-void display_entries(t_list *files, int flags) {
-	char *user;
-	t_list *file = files;
-	if (!files)
-		return ;
-	if (flags & LONG) {// case -l
-		time_t now = time(NULL);
-		// display total blocks HERE
-		while (file) {
-			t_filedata *data = (t_filedata *)file->content;
-			if (!(flags & HIDDEN) && data->name[0] == '.') {
-				file = file->next;
-				continue;
-			}
-			if (data->bytes >= 0) {
-				user = find_id(data->own_user, 1);
-				if (user)
-					ft_printf("%c%s  %d %s  ", data->f_type, data->permissions, data->links, user);
-				else
-					ft_printf("%c%s  %d %u  ", data->f_type, data->permissions, data->links, data->own_user);
-				user = find_id(data->own_group, 0);
-				if (user)
-					ft_printf("%s  %d ", user, data->bytes);
-				else
-					ft_printf("%u  %d ", data->own_group, data->bytes);
-				print_modified(data->modified, now);
-				ft_printf(" %s\n", data->name);
-			}
-			file = file->next;
+// set the max columns sizes in sizes[4], also return total blocks
+int	size_columns(t_list *files, int sizes[4], int flags) {
+	char	*user = NULL;
+	int		blocks = 0;
+	while (files) {
+		// 0-links  1-user  2-group  3-bytes
+		t_filedata *data = (t_filedata *)files->content;
+		if ((!(flags & HIDDEN) && data->name[0] == '.') || data->bytes < 0) {
+			files = files->next;
+			continue;
 		}
-	} else {// default
-		// display total blocks HERE (wait no thats long form only right?)
-		while (file) {
-			t_filedata *data = (t_filedata *)file->content;
-			if (!(flags & HIDDEN) && data->name[0] == '.') {
-				file = file->next;
-				continue;
-			}
-			if (data->bytes >= 0)
-				ft_printf("%s\t\t", data->name);
-			file = file->next;
-		}
-		write(1, "\n", 1);
+		blocks += data->blocks;
+		sizes[0] = ft_max(sizes[0], ft_digits_lu(data->links, 10));
+		user = getpwuid(data->own_user)->pw_name;
+		if (user)
+			sizes[1] = ft_max(sizes[1], ft_strlen(user));
+		else
+			sizes[1] = ft_max(sizes[1], ft_digits_u(data->own_user, 10));
+		user = getgrgid(data->own_group)->gr_name;
+		if (user)
+			sizes[2] = ft_max(sizes[2], ft_strlen(user));
+		else
+			sizes[2] = ft_max(sizes[2], ft_digits_u(data->own_group, 10));
+		sizes[3] = ft_max(sizes[3], ft_digits_lu(data->bytes, 10));
+		files = files->next;
 	}
-	write(1, "\n", 1);//HERE this results in extra newline at the end of output
+	return blocks/2;//block size is 1k, filestat gives 512
 }
-// void display_entries(t_filedata **files, int flags) {
-// 	char *user;
-// 	if (!files)
-// 		return ;
-// 	if (flags & LONG) {// case -l
-// 		time_t now = time(NULL);
-// 		// display total blocks HERE
-// 		for (int i = 0; files[i] != NULL; i++) {
-// 			if (!(flags & HIDDEN) && files[i]->name[0] == '.')
-// 				continue;
-// 			if (files[i]->bytes >= 0) {
-// 				user = find_id(files[i]->own_user, 1);
-// 				if (user)
-// 					ft_printf("%c%s  %d %s  ", files[i]->f_type, files[i]->permissions, files[i]->links, user);
-// 				else
-// 					ft_printf("%c%s  %d %u  ", files[i]->f_type, files[i]->permissions, files[i]->links, files[i]->own_user);
-// 				user = find_id(files[i]->own_group, 0);
-// 				if (user)
-// 					ft_printf("%s  %d ", user, files[i]->bytes);
-// 				else
-// 					ft_printf("%u  %d ", files[i]->own_group, files[i]->bytes);
-// 				print_modified(files[i]->modified, now);
-// 				ft_printf(" %s\n", files[i]->name);
-// 			}
-// 		}
-// 	} else {// default
-// 		for (int i = 0; files[i] != NULL; i++) {
-// 			if (!(flags & HIDDEN) && files[i]->name[0] == '.')
-// 				continue;
-// 			if (files[i]->bytes >= 0)
-// 				ft_printf("%s\t\t", files[i]->name);
-// 		}
-// 		write(1, "\n", 1);
-// 	}
-// 	write(1, "\n", 1);
-// }
 
 // print the date string in the ls -l format, no '\n'
-void print_modified(time_t seconds, time_t now) {
+void	display_modified(time_t seconds, time_t now) {
 	char *str = ctime(&seconds);
 	char *year = str + 20;
 	char *date = str + 4;
@@ -105,12 +51,20 @@ void print_modified(time_t seconds, time_t now) {
 		diff = -diff;
 	if (diff > 15552000) {//six months
 		*(date + 6) = '\0';
-		ft_printf("%s %s", date, year);
+		ft_printf("%s %s  ", date, year);
 	} else {
 		*(date + 12) = '\0';
-		ft_printf("%s", date);
+		ft_printf("%s ", date);
 	}
 	// Www Mmm dd hh:mm:ss yyyy\n
 	// Mmm dd hh:mm -> Jul  7 10:55
 	// Mmm dd yyyy  -> Jul  7 2025
+}
+
+void	print_space(int n) {
+	int i = 0;
+	while (i < n) {
+		write(1, " ", 1);
+		i++;
+	}
 }

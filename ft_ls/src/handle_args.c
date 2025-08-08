@@ -1,7 +1,6 @@
 #include "ft_ls.h"
 
 t_list		*names_to_filedata(t_list *paths);
-// t_filedata	**lst_to_filedata(t_list *paths);
 int			set_flags(t_list *flags);
 void		separate_args(int argc, char **argv, t_list **paths, t_list **flags);
 char		*arg_to_path(char *pwd, char *arg);
@@ -79,31 +78,6 @@ int set_flags(t_list *flags) {
 	return bits;
 }
 
-// // go through paths list and init filedata to array (array malloc)
-// t_filedata **lst_to_filedata(t_list *paths) {
-// 	t_filedata **files;
-// 	int size = ft_lstsize(paths);
-// 	int i = 0;
-
-// 	if (size == 0) {
-// 		files = (t_filedata **)malloc(sizeof(t_filedata *) * 2);
-// 		if (files) {
-// 			files[0] = init_file_name(ft_strdup("."));
-// 			files[1] = NULL;
-// 		}
-// 		return files;
-// 	}
-// 	files = (t_filedata **)malloc((size + 1) * sizeof(t_filedata *));
-// 	if (!files)
-// 		return NULL;
-// 	while (paths) {
-// 		files[i++] = init_file_name(ft_strdup(paths->content));
-// 		paths = paths->next;
-// 	}
-// 	files[i] = NULL;
-// 	return files;
-// }
-
 // go through paths list and init filedata into list (t_list malloc)
 t_list *names_to_filedata(t_list *paths) { //HERE can maybe be improved by adding param to say if was malloced and doing changes in place, no returning
 	t_list *files = NULL;
@@ -113,21 +87,3 @@ t_list *names_to_filedata(t_list *paths) { //HERE can maybe be improved by addin
 	}
 	return files;
 }
-
-// static int count_paths(int argc, char **argv) {
-// 	int flag_end = 0;
-// 	int count = 0;
-// 	if (argc < 2)
-// 		return 0;
-// 	for (int i = 1; i < argc; i++) {
-// 		if (argv[i][0] && argv[i][0] == '-') {
-// 			if (flag_end)
-// 				count++;
-// 			else if (argv[i][1] && argv[i][1] == '-')
-// 				flag_end = 1;
-// 		} else {
-// 			count++;
-// 		}
-// 	}
-// 	return count;
-// }

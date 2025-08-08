@@ -6,7 +6,8 @@ CFLAGS		= -Wall -Wextra -Werror
 
 SRCS		= main.c \
 			filedata.c handle_args.c test_helpers.c \
-			file_info.c directories.c format.c mergesort.c
+			file_info.c directories.c format.c mergesort.c\
+			display.c
 OBJS		= ${SRCS:.c=.o}
 OBJS		:= $(addprefix obj/, $(OBJS))
 SRCS		:= $(addprefix src/, $(SRCS))

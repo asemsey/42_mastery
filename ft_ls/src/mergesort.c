@@ -18,7 +18,6 @@ void		merge_sort(t_list **lst, t_list *(*comp)(t_list *, t_list *, int), int len
 			ft_lstswap(lst);
 		return;
 	}
-	// for i=0;i<(len/2+len%2);i++   f2 = f2.next
 	for (int i = 0; i < (len/2 + len%2);i++)
 		ft_lstadd_back(&f1, ft_lstpopout(lst, (*lst)->content));
 	for (int i = 0; i < (len/2);i++)
